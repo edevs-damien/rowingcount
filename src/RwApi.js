@@ -21,7 +21,6 @@ export async function dbQuery(query) {
 }
 
 
-
 export async function getAllUser() {
     const data = await dbQuery(`{ allUser { data { _id name km nbt admin last } } }`)
     if(data.allUser.data === undefined) return false
@@ -31,14 +30,14 @@ export async function getAllUser() {
 export async function getUserByName(name) {
     const data = await dbQuery(`query getUserbyName { userByName(name: "${name}") { data { _id name km nbt admin last } } }`)
     if(data.userByName.data === undefined) return false
-    return data.userByName.data
+    return data.userByName.data[0]
 }
-
 
 export async function getTrainingByUser(name) {
     const data = await dbQuery(`query getTrainingByUser { userByName(name: "${name}") { data { Trainings { data { _id km boat date rowers { data { _id name } } } } } } }`)
-    if(data.userByName.data.Trainings=== undefined) return false
-    return data.userByName.data.Trainings
+    if(data.userByName.data[0].Trainings=== undefined) return false
+
+    return data.userByName.data[0].Trainings.data
 }
 
 export async function getAllTraining() {
@@ -47,26 +46,44 @@ export async function getAllTraining() {
     return data.allTraining.data
 }
 
-
 export async function createTrainig(km, boat, date, rowers) {
 
     const IdList = [];
+    const IdList2 = [];
+    const KmList = [];
+    const nbtList = [];
     let i = 0;
+    let ik = 0;
+
 
 
     const next = async function (){
       dbQuery(`query getUserId { userByName(name: "${rowers[i]}") { data { _id km nbt } } }`).then(async (data) => {
           if(data.userByName.data[0]._id=== undefined) return false
           IdList.push('"' + data.userByName.data[0]._id + '"')
-          dbQuery(`mutation changeKm { updateUser(id: "${data.userByName.data[0]._id}", data: { km: ${data.userByName.data[0].km + km} nbt: ${data.userByName.data[0].nbt + 1} }) }`).then(async d => {
+          IdList2.push(data.userByName.data[0]._id)
+          KmList.push(data.userByName.data[0].km)
+          nbtList.push(data.userByName.data[0].nbt)
               i++;
               if (rowers.length === IdList.length) {
-                  await finalFetch()
+                 return await kmFetch()
               } else next()
-          })
+
 
       })
     }
+
+    const kmFetch = async function () {
+
+        dbQuery(`mutation changeKm { updateUser(id: "${IdList2[ik]}", data: { km: ${KmList[ik] + km} nbt: ${nbtList[ik] + 1} }) {_id}  }`).then(async (data) => {
+            ik++
+            if (ik === IdList.length) {
+                return await finalFetch()
+            } else kmFetch()
+        })
+
+    }
+
 
     const finalFetch = async function () {
 
@@ -77,47 +94,65 @@ export async function createTrainig(km, boat, date, rowers) {
     }
 
 
-   await next()
+     await next()
 
 }
-
-
-
 
 export async function resetKm(name) {
 
-        dbQuery(`query getUserId { userByName(name: "${name}") { data { _id km nbt } } }`).then(data => {
-            const id = data.userByName.data._id
-            if(data.userByName.data._id=== undefined) return false
+        var id
+        dbQuery(`query getUserId { userByName(name: "${name}") { data { _id} } }`).then(async data => {
+            
+            id = data.userByName.data[0]._id
 
-            dbQuery(`mutation changeKm { updateUser(id: "${id}", data: { km: 0 nbt: 0 last: "${new Date().toLocaleDateString('en-GB').toString().replaceAll("/", ".")}" }) {_id}  }`)
+
+            await next()
 
         })
-}
 
+        const next = async () => {
+            await dbQuery(`mutation changeKm { updateUser(id: "${id}", data: { km: 0 nbt: 0 last: "${new Date().toLocaleDateString('en-GB').toString().replaceAll("/", ".")}" }) {_id}  }`)
+        }
+}
 
 export async function deleteUser(name) {
+    var id
+    dbQuery(`query getUserId { userByName(name: "${name}") { data { _id} } }`).then(async data => {
+        
+        id = data.userByName.data[0]._id
 
-    dbQuery(`query getUserId { userByName(name: "${name}") { data { _id km nbt } } }`).then(data => {
-        const id = data.userByName.data._id
-        if(data.userByName.data._id=== undefined) return false
 
-        dbQuery(`mutation changeKm { deleteUser(id: "${id}") {_id} }`)
+        await next()
 
     })
+
+    const next = async () => {
+        await dbQuery(`mutation changeKm { deleteUser(id: "${id}") {_id} }`)
+    }
+
+
 }
-
-
 
 export async function createUser(name) {
 
-    dbQuery(`query getUserId { userByName(name: "${name}") { data { _id km nbt } } }`).then(data => {
-        const id = data.userByName.data._id
-        if(data.userByName.data._id=== undefined) return false
 
-        dbQuery(`mutation createUser { createUser(data: { nbt: 0 km: 0 last: "${new Date().toLocaleDateString('en-GB').toString().replaceAll("/", ".")}" name: "${name}" admin : false }) { _id } }`)
 
+
+    dbQuery(`query getUserId { userByName(name: "${name}") { data { _id} } }`).then(async data => {
+        
+
+        try {
+            const id = data.userByName.data[0]._id
+        } catch (error) {
+            await next()
+            return
+        }
+        console.log("User Exists")
     })
+
+    const next = async () => {
+        await dbQuery(`mutation createUser { createUser(data: { nbt: 0 km: 0 last: "${new Date().toLocaleDateString('en-GB').toString().replaceAll("/", ".")}" name: "${name}" admin : false }) { _id } }`)
+    }
 }
 
 

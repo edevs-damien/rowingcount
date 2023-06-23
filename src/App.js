@@ -1,5 +1,15 @@
 import './App.css';
-import {createTrainig, dbQuery, getAllUser} from "./RwApi";
+import {
+    createTrainig,
+    createUser,
+    dbQuery, deleteUser,
+    getAllTraining,
+    getAllUser,
+    getTrainingByUser,
+    getUserByName,
+    resetKm
+} from "./RwApi";
+import {useEffect} from "react";
 
 function App() {
 
@@ -10,7 +20,9 @@ function App() {
 
   return (
     <div className="App">
-      <h1></h1>
+      <button onClick={r => {
+
+      }}>hello</button>
     </div>
   );
 }

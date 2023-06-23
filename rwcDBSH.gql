@@ -1,0 +1,23 @@
+type Training {
+    date: String
+    km: Int
+    rowers: [User!] @relation
+    boat: String
+
+}
+
+type User {
+    name: String
+    km: Int
+    nbt: Int
+    admin: Boolean
+    last: String
+    Trainings: [Training] @relation
+}
+
+type Query { 
+  allUser: [User!]
+  allTraining: [Training!]
+  userByName(name: String!): [User!]
+
+}

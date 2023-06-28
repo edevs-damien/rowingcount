@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import HomePage from "./Pages/HomePage";
 import {createTheme, ThemeProvider} from "@mui/material";
+import {createTrainig, login} from "./RwApi";
+import ListPage from "./Pages/ListPage";
+import LoginPage from "./Pages/LoginPage";
 
 
 const theme = createTheme({
@@ -30,11 +33,71 @@ const theme = createTheme({
 });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
 
-  <React.StrictMode>
-      <ThemeProvider theme={theme}>
-          <HomePage/>
-      </ThemeProvider>
-  </React.StrictMode>
-);
+renderLogin();
+
+login("Damien")
+
+export function renderHome() {
+    root.render(
+
+        <React.StrictMode>
+            <ThemeProvider theme={theme}>
+                <HomePage/>
+            </ThemeProvider>
+        </React.StrictMode>
+    );
+
+}
+
+export function renderList() {
+    root.render(
+
+        <React.StrictMode>
+            <ThemeProvider theme={theme}>
+                <ListPage/>
+            </ThemeProvider>
+        </React.StrictMode>
+    );
+
+}
+
+export function renderLogin() {
+    root.render(
+
+        <React.StrictMode>
+            <ThemeProvider theme={theme}>
+                <LoginPage/>
+            </ThemeProvider>
+        </React.StrictMode>
+    );
+
+}
+
+
+export function renderSetings() {
+    root.render(
+
+        <React.StrictMode>
+            <ThemeProvider theme={theme}>
+
+            </ThemeProvider>
+        </React.StrictMode>
+    );
+
+}
+
+
+export function renderAdd() {
+    createTrainig(25, "Perle", "03.06.2023", ["Damien"])
+
+    root.render(
+
+        <React.StrictMode>
+            <ThemeProvider theme={theme}>
+
+            </ThemeProvider>
+        </React.StrictMode>
+    );
+
+}

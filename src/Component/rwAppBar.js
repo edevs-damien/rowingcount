@@ -10,6 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RowingIcon from '@mui/icons-material/Rowing';
 import SettingsIcon from '@mui/icons-material/Settings';
 import {Grid} from "@mui/material";
+import {renderAdd, renderHome, renderList, renderSetings} from "../index";
 
 
 
@@ -35,17 +36,17 @@ function RwAppBar() {
 
                     <Grid container spacing={2}>
                         <Grid item xs={3}>
-                            <IconButton color="inherit" aria-label="open drawer">
+                            <IconButton onClick={renderHome} color="inherit" >
                                 <HomeIcon />
                             </IconButton>
                         </Grid>
                         <Grid item xs={3}>
-                            <IconButton color="inherit">
+                            <IconButton onClick={renderList} color="inherit">
                                 <RowingIcon />
                             </IconButton>
                         </Grid>
 
-                        <Grid item xs={3}>
+                        <Grid onClick={renderSetings} item xs={3}>
                             <IconButton color="inherit">
                                 <SettingsIcon />
                             </IconButton>
@@ -55,7 +56,7 @@ function RwAppBar() {
                     </Grid>
 
 
-                    <StyledFab color="secondary" aria-label="add">
+                    <StyledFab onClick={renderAdd} color="secondary" aria-label="add">
                         <AddIcon />
                     </StyledFab>
                     <Box sx={{ flexGrow: 1 }} />

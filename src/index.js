@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import HomePage from "./Pages/HomePage";
 import {createTheme, ThemeProvider} from "@mui/material";
-import {createTrainig, login} from "./RwApi";
+import {createTrainig, createUser, deleteUser, login, resetKm} from "./RwApi";
 import ListPage from "./Pages/ListPage";
 import LoginPage from "./Pages/LoginPage";
+import homePage from "./Pages/HomePage";
+import SettingsPage from "./Pages/SettingsPage";
 
 
 const theme = createTheme({
@@ -34,9 +36,9 @@ const theme = createTheme({
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-renderLogin();
+renderHome();
 
-login("Damien")
+
 
 export function renderHome() {
     root.render(
@@ -75,12 +77,13 @@ export function renderLogin() {
 }
 
 
+
 export function renderSetings() {
     root.render(
 
         <React.StrictMode>
             <ThemeProvider theme={theme}>
-
+                <SettingsPage/>
             </ThemeProvider>
         </React.StrictMode>
     );
@@ -89,15 +92,9 @@ export function renderSetings() {
 
 
 export function renderAdd() {
-    createTrainig(25, "Perle", "03.06.2023", ["Damien"])
+    createTrainig(10, "Perle", "03.06.2023", ["Damien"])
 
-    root.render(
 
-        <React.StrictMode>
-            <ThemeProvider theme={theme}>
 
-            </ThemeProvider>
-        </React.StrictMode>
-    );
 
 }

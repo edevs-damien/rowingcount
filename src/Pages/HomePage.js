@@ -32,6 +32,11 @@ function HomePage() {
         else if (hours < 18) setName("Bonjour " + getUserName());
 
         getUserByName(getUserName()).then(userData => {
+            if(userData === undefined || userData === null) {
+                renderLogin()
+                return;
+            }
+
             setKm(userData.km + " Km");
             setLastR("depuis le " +userData.last );
             setNbt(userData.nbt + " Sorties");

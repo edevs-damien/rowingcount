@@ -6,8 +6,8 @@ import {createTheme, ThemeProvider} from "@mui/material";
 import {createTrainig, createUser, deleteUser, login, resetKm} from "./RwApi";
 import ListPage from "./Pages/ListPage";
 import LoginPage from "./Pages/LoginPage";
-import homePage from "./Pages/HomePage";
 import SettingsPage from "./Pages/SettingsPage";
+import AddPage from "./Pages/AddPage";
 
 
 const theme = createTheme({
@@ -92,7 +92,14 @@ export function renderSetings() {
 
 
 export function renderAdd() {
-    createTrainig(10, "Perle", "03.06.2023", ["Damien"])
+    root.render(
+
+        <React.StrictMode>
+            <ThemeProvider theme={theme}>
+                <AddPage/>
+            </ThemeProvider>
+        </React.StrictMode>
+    );
 
 
 

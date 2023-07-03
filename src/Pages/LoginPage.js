@@ -1,11 +1,21 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
-import {Autocomplete, Backdrop, Button, Chip, CircularProgress, Grid, Paper, TextField} from "@mui/material";
+import {
+    Autocomplete,
+    Backdrop,
+    Button,
+    Chip,
+    CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText,
+    DialogTitle,
+    Grid,
+    Paper,
+    TextField
+} from "@mui/material";
 import RwAppBar from "../Component/rwAppBar";
 import "./defaultSheet.css"
 import {useEffect, useState} from "react";
 import Space from "../Component/Space";
-import {getAllUser, getUserByName, getUserName, login} from "../RwApi";
+import {createUser, getAllUser, getUserByName, getUserName, login} from "../RwApi";
 import {renderHome, renderLogin} from "../index";
 
 const RwPaper = styled(Paper)({
@@ -35,8 +45,16 @@ function LoginPage() {
     }, [])
 
     const [loading, setLoading] = useState(true);
-    const [userName, setUserName] = useState(true);
+    const [dg, setdg] = useState(false);
+    const [userName, setUserName] = useState();
+    const [newName, setNewName] = useState();
     const [UserList, setUserList] = useState([]);
+
+
+    const handleClose = () => {
+        setdg(false);
+    };
+
 
 
     return (
@@ -63,10 +81,54 @@ function LoginPage() {
                             login(userName);
                             renderHome();
                         }} variant="outlined">Se Connecter</Button>
+                        <Button style={{marginLeft: 10}} size={"small"} onClick={() => {
+                            setdg(true);
+                        }}>S'inscrire</Button>
                     </Grid>
+
+
                 </Grid>
 
             </RwPaper>
+
+            <Dialog open={dg} onClose={handleClose}>
+                <DialogTitle>S'inscrire</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Nom"
+                        fullWidth
+                        variant="standard"
+                        value={newName}
+                        onChange={(event) => {
+                            setNewName(event.target.value);
+                        }}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Annuler</Button>
+                    <Button onClick={() => {
+                        if(UserList.includes(newName)) {
+                            alert("Ce nom est déjà pris");
+                        } else {
+                            setLoading(true);
+                            createUser(newName).then(() => {
+                                setTimeout(() => {
+                                    login(newName);
+                                    renderHome();
+                                    setLoading(false);
+                                }, 1000);
+
+
+                            });
+
+                        }
+
+                    }}>S'inscrire</Button>
+                </DialogActions>
+            </Dialog>
 
 
 

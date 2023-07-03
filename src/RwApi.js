@@ -1,4 +1,4 @@
-const auth = "Bearer fnAFHCwaZ1AAzXtVOGJ_puy0bfpwsh4NZbiyS0r-"
+const auth = `Bearer fnAFHCwaZ1AAzXtVOGJ_puy0bfpwsh4NZbiyS0r-`
 export async function dbQuery(query) {
     const req = await fetch('https://graphql.eu.fauna.com/graphql', {
         method: 'POST',
@@ -88,7 +88,7 @@ export async function createTrainig(km, boat, date, rowers) {
     const finalFetch = async function () {
 
         var Ids = IdList.join(",")
-        const req = await dbQuery(`mutation createTraining { createTraining(data: { km : ${km} date: "${date.toString().replaceAll("/", ".")}" rowers : { connect : [ ${Ids} ] } boat : "${boat}" }) { _id } }`)
+        const req = await dbQuery(`mutation createTraining { createTraining(data: { km : ${km} date: "${date.toLocaleDateString("fr").replaceAll("/", ".")}" rowers : { connect : [ ${Ids} ] } boat : "${boat}" }) { _id } }`)
         if(req.createTraining._id !== undefined) {
             return true
         } else {

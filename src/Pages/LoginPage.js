@@ -64,6 +64,13 @@ function LoginPage(props) {
         setdg(false);
     };
 
+    const deleteEndSpace = (entry) => {
+        if(entry.charAt(entry.length - 1) === " ") {
+            entry = entry.slice(0, -1);
+        }
+        return entry;
+    }
+
 
 
     return (
@@ -132,7 +139,8 @@ function LoginPage(props) {
                         variant="standard"
                         value={newName}
                         onChange={(event) => {
-                            setNewName(event.target.value);
+
+                            setNewName(deleteEndSpace(event.target.value));
                         }}
                     />
                 </DialogContent>

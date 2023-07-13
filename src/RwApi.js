@@ -77,7 +77,7 @@ export async function createTrainig(km, boat, date, rowers) {
 
     const kmFetch = async function () {
 
-        dbQuery(`mutation changeKm { updateUser(id: "${IdList2[ik]}", data: { km: ${KmList[ik] + km} nbt: ${nbtList[ik] + 1} }) {_id}  }`).then(async (data) => {
+        dbQuery(`mutation changeKm { updateUser(id: "${IdList2[ik]}", data: { km: ${KmList[ik] + km} nbt: ${nbtList[ik] + 1} }) {_id}  }`).then(async () => {
             ik++
             if (ik === IdList.length) {
                 return await finalFetch()
@@ -89,13 +89,9 @@ export async function createTrainig(km, boat, date, rowers) {
 
     const finalFetch = async function () {
 
-        var Ids = IdList.join(",")
+        const Ids = IdList.join(",");
         const req = await dbQuery(`mutation createTraining { createTraining(data: { km : ${km} date: "${date.toLocaleDateString("fr").replaceAll("/", ".")}" rowers : { connect : [ ${Ids} ] } boat : "${boat}" }) { _id } }`)
-        if(req.createTraining._id !== undefined) {
-            return true
-        } else {
-            return false
-        }
+        return req.createTraining._id !== undefined;
 
     }
 
@@ -139,16 +135,40 @@ export async function deleteUser(name) {
 
 }
 
+export async function deleteTraining(data) {
+
+    console.log(data)
+    let IdList = []
+    const next = async () => {
+        await dbQuery(`mutation changeTraining { updateTraining(id: "${data._id}", data: { rowers: { disconnect : [ ${IdList.join(", ")} ] } }) {_id}}`)
+        await next2()
+    }
+
+    const next2 = async () => {
+        await dbQuery(`mutation changeTraining { deleteTraining(id: "${data._id}") {_id} }`)
+
+    }
+
+   data.rowers.data.forEach((d) => {
+       IdList.push('"' + d._id + '"')
+   })
+    await next()
+
+
+
+
+
+}
+
 export async function createUser(name) {
 
 
 
 
-    dbQuery(`query getUserId { userByName(name: "${name}") { data { _id} } }`).then(async data => {
+    dbQuery(`query getUserId { userByName(name: "${name}") { data { _id} } }`).then(async () => {
         
 
         try {
-            const id = data.userByName.data[0]._id
         } catch (error) {
             await next()
             return
@@ -188,10 +208,10 @@ function getCookie(cname) {
     let ca = document.cookie.split(';');
     for(let i = 0; i < ca.length; i++) {
         let c = ca[i];
-        while (c.charAt(0) == ' ') {
+        while (c.charAt(0) === ' ') {
             c = c.substring(1);
         }
-        if (c.indexOf(name) == 0) {
+        if (c.indexOf(name) === 0) {
             return c.substring(name.length, c.length);
         }
     }

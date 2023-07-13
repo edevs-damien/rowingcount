@@ -2,9 +2,9 @@ import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import {
     Alert,
-    Backdrop,
+    Backdrop, Button,
     Chip,
-    CircularProgress, Collapse,
+    CircularProgress, Collapse, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
     Grid,
     Paper,
     Table, TableBody,
@@ -17,9 +17,12 @@ import RwAppBar from "../Component/rwAppBar";
 import "./defaultSheet.css"
 import {useEffect, useState} from "react";
 import Space from "../Component/Space";
-import {getAllTraining, getTrainingByUser, getUserName} from "../RwApi";
+import {deleteTraining, getAllTraining, getTrainingByUser, getUserName} from "../RwApi";
 import {renderLogin} from "../index";
 import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 const RwPaper = styled(Paper)({
     margin: 10,
@@ -72,16 +75,40 @@ function ListPage(props) {
 
 
     const [loading, setLoading] = useState(true);
-    const [data, setData] = useState([{id: 1,date: "30.06.2023", km: 10, boat: "Boat 1",rowers: {data: [{name: "Damien"},{name: "Sava"},{name: "Damien"},{name: "Sava"}]}}]);
+    const [deletePerm, setDeletePerm] = useState(true);
+    const [data, setData] = useState([{_id: 1,id: 1,date: "30.06.2023", km: 10, boat: "Boat 1",rowers: {data: [{name: "Damien"},{name: "Sava"},{name: "Damien"},{name: "Sava"}]}}]);
     const [b1, setb1] = useState("outlined");
     const [b2, setb2] = useState("filled");
+    const [deleteDialog, setDeleteDialog] = useState(false);
+
+    const [deleteData, setDeleteData] = useState("");
 
 
     const [addAlert, setAddAlert] = useState(false);
+
+
+    const handleCloseDialog = () => {
+        setDeleteDialog(false);
+    };
+
+    const handleCloseDialogValid = () => {
+
+        setLoading(true)
+        setDeleteDialog(false);
+        deleteTraining(deleteData)
+
+        setTimeout(() => {
+            setLoading(false)
+            displayTrainingByUser()
+        }, 1000)
+
+
+    };
     const displayAllTraining = () => {
 
         setb1("filled")
         setb2("outlined")
+        setDeletePerm(false)
         setLoading(true)
         getAllTraining().then((data) => {
             let list = []
@@ -106,10 +133,20 @@ function ListPage(props) {
 
     }
 
+
+    const handleClick = (row) => {
+
+        setDeleteDialog(true)
+        setDeleteData(row)
+
+
+    }
+
     const displayTrainingByUser = () => {
 
         setb1("outlined")
         setb2("filled")
+        setDeletePerm(true)
         setLoading(true)
         getTrainingByUser(getUserName()).then((data) => {
             let list = []
@@ -130,6 +167,54 @@ function ListPage(props) {
             setLoading(false)
 
         })
+    }
+
+
+    const dataDisplay = () => {
+
+        if(deletePerm) {
+            return( data.map((row) => (
+                    <TableRow
+
+                        key={row.id}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                        <TableCell component="th" scope="row">
+                            {row.date}
+                        </TableCell>
+                        <TableCell align="right">{row.km}</TableCell>
+                        <TableCell align="right">{row.boat}</TableCell>
+
+                        <TableCell align="right">{row.rwf}</TableCell>
+
+                        <TableCell align="right"><IconButton onClick={() => handleClick(row)}>
+                            <DeleteIcon />
+                        </IconButton></TableCell>
+
+                    </TableRow>
+                ))
+            )
+        } else {
+            return( data.map((row) => (
+                    <TableRow
+                        key={row.id}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                        <TableCell component="th" scope="row">
+                            {row.date}
+                        </TableCell>
+                        <TableCell align="right">{row.km}</TableCell>
+                        <TableCell align="right">{row.boat}</TableCell>
+
+                        <TableCell align="right">{row.rwf}</TableCell>
+
+                        <TableCell align="right"></TableCell>
+
+                    </TableRow>
+                ))
+            )
+        }
+
     }
 
     return (
@@ -165,25 +250,14 @@ function ListPage(props) {
                                 <TableCell align="right">Km</TableCell>
                                 <TableCell align="right">Bateau</TableCell>
                                 <TableCell align="right">Rameur</TableCell>
+                                <TableCell align="right"></TableCell>
 
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {data.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell component="th" scope="row">
-                                        {row.date}
-                                    </TableCell>
-                                    <TableCell align="right">{row.km}</TableCell>
-                                    <TableCell align="right">{row.boat}</TableCell>
-
-                                    <TableCell align="right">{row.rwf}</TableCell>
-
-                                </TableRow>
-                            ))}
+                            {
+                                dataDisplay()
+                            }
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -205,6 +279,29 @@ function ListPage(props) {
 
                 <CircularProgress color="inherit" />
             </Backdrop>
+
+
+            <Dialog
+                open={deleteDialog}
+                onClose={handleCloseDialog}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Supprimer l'entraînement"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                       Ce action est irreversible. Elle supprimera cette entraînement pour tout les utilisateurs.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog}>Annuler</Button>
+                    <Button onClick={handleCloseDialogValid} autoFocus>
+                        Supprimer
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
 
 

@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import {
+    Alert,
     Autocomplete,
     Backdrop,
     Button,
     Chip,
-    CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText,
+    CircularProgress, Collapse, Dialog, DialogActions, DialogContent, DialogContentText,
     DialogTitle,
     Grid,
     Paper,
@@ -24,7 +25,7 @@ const RwPaper = styled(Paper)({
 });
 
 
-function LoginPage() {
+function LoginPage(props) {
 
     useEffect(() => {
 
@@ -38,6 +39,12 @@ function LoginPage() {
         })
 
 
+        if(props.mes === "logout") {
+            setDisconectAlert(true);
+            setTimeout(() => {
+                setDisconectAlert(false);
+            }, 3000);
+        }
 
 
 
@@ -50,6 +57,8 @@ function LoginPage() {
     const [newName, setNewName] = useState();
     const [UserList, setUserList] = useState([]);
 
+    const [disconectAlert, setDisconectAlert] = useState(false);
+    const [userNameAlert, setUserNameAlert] = useState(false);
 
     const handleClose = () => {
         setdg(false);
@@ -63,7 +72,20 @@ function LoginPage() {
 
             <RwPaper>
 
+
+
                 <Grid container spacing={2}>
+
+
+                    <Grid item xs={12}>
+                        <Collapse in={disconectAlert}>
+
+
+                            <Alert severity="success">Déconnecté avec succes</Alert>
+
+
+                        </Collapse>
+                    </Grid>
 
                     <Grid item xs={12}>
                         <Autocomplete
@@ -94,6 +116,13 @@ function LoginPage() {
             <Dialog open={dg} onClose={handleClose}>
                 <DialogTitle>S'inscrire</DialogTitle>
                 <DialogContent>
+                    <Collapse in={userNameAlert}>
+
+
+                        <Alert severity="error">Ce nom est déjà pris</Alert>
+
+
+                    </Collapse>
                     <TextField
                         autoFocus
                         margin="dense"
@@ -111,7 +140,7 @@ function LoginPage() {
                     <Button onClick={handleClose}>Annuler</Button>
                     <Button onClick={() => {
                         if(UserList.includes(newName)) {
-                            alert("Ce nom est déjà pris");
+                            setUserNameAlert(true);
                         } else {
                             setLoading(true);
                             createUser(newName).then(() => {

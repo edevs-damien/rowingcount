@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
-import {Backdrop, Chip, CircularProgress, Grid, Paper} from "@mui/material";
+import {Alert, Backdrop, Chip, CircularProgress, Collapse, Grid, Paper} from "@mui/material";
 import RwAppBar from "../Component/rwAppBar";
 import "./defaultSheet.css"
 import {useEffect, useState} from "react";
@@ -14,7 +14,7 @@ const RwPaper = styled(Paper)({
 });
 
 
-function HomePage() {
+function HomePage(props) {
 
     useEffect(() => {
 
@@ -69,6 +69,12 @@ function HomePage() {
 
 
 
+        if(props.mes === "reset") {
+            setResetAlert(true);
+            setTimeout(() => {
+                setResetAlert(false);
+            }, 3000);
+        }
 
 
 
@@ -82,12 +88,23 @@ function HomePage() {
     const [ClassData, setClassData] = useState([{name: "Chargement", km: "Chargement", rank: "🥇"},{name: "Chargement", km: "Chargement", rank: "🥈"},{name: "Chargement", km: "Chargement", rank: "🥉"}]);
     const [loading, setLoading] = useState(true);
 
+    const [resetAlert, setResetAlert] = useState(false);
+
     return (
         <React.Fragment>
            <h1>{Name}</h1>
 
             <RwPaper>
                 <h2>Résultat Personel</h2>
+
+                <Collapse style={{marginBottom: 15, marginTop: 15}} in={resetAlert}>
+
+
+                    <Alert severity="success">Réinitialisé avec succes</Alert>
+
+
+                </Collapse>
+
 
                 <Grid  container spacing={1} rowSpacing={3} >
                     <Grid style={{textAlign: "left"}}  item xs={6}>

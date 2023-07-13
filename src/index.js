@@ -34,13 +34,20 @@ const theme = createTheme({
     },
 });
 
+
+
+
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 renderHome();
 
 
 
-export function renderHome() {
+export function renderHome(mes) {
+
+
     root.render(
 
         <React.StrictMode>
@@ -50,9 +57,19 @@ export function renderHome() {
         </React.StrictMode>
     );
 
+    if(mes === "reset") {
+        root.render(
+
+            <React.StrictMode>
+                <ThemeProvider theme={theme}>
+                    <HomePage mes={"reset"}/>
+                </ThemeProvider>
+            </React.StrictMode>
+        );
+    }
 }
 
-export function renderList() {
+export function renderList(mes) {
     root.render(
 
         <React.StrictMode>
@@ -62,9 +79,21 @@ export function renderList() {
         </React.StrictMode>
     );
 
+
+    if(mes === "add") {
+        root.render(
+
+            <React.StrictMode>
+                <ThemeProvider theme={theme}>
+                    <ListPage mes={"add"}/>
+                </ThemeProvider>
+            </React.StrictMode>
+        );
+    }
+
 }
 
-export function renderLogin() {
+export function renderLogin(mes) {
     root.render(
 
         <React.StrictMode>
@@ -73,6 +102,18 @@ export function renderLogin() {
             </ThemeProvider>
         </React.StrictMode>
     );
+
+    if(mes === "logout") {
+        root.render(
+
+            <React.StrictMode>
+                <ThemeProvider theme={theme}>
+                    <LoginPage mes={"logout"}/>
+                </ThemeProvider>
+            </React.StrictMode>
+        );
+    }
+
 
 }
 

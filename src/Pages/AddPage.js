@@ -141,7 +141,7 @@ function AddPage() {
                                     setLoading(true);
                                    setTimeout(() => {
                                        setLoading(false);
-                                       renderList()
+                                       renderList("add")
 
                                    }, 700);
                                 })

@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import {
+    Alert,
     Backdrop,
     Chip,
-    CircularProgress,
+    CircularProgress, Collapse,
     Grid,
     Paper,
     Table, TableBody,
@@ -27,7 +28,7 @@ const RwPaper = styled(Paper)({
 });
 
 
-function ListPage() {
+function ListPage(props) {
 
     useEffect(() => {
 
@@ -59,6 +60,13 @@ function ListPage() {
         })
 
 
+        if(props.mes === "add") {
+            setAddAlert(true)
+            setTimeout(() => {
+                setAddAlert(false)
+            }, 3000)
+        }
+
 
 
     }, [])
@@ -69,6 +77,8 @@ function ListPage() {
     const [b1, setb1] = useState("filled");
     const [b2, setb2] = useState("outlined");
 
+
+    const [addAlert, setAddAlert] = useState(false);
     const displayAllTraining = (b) => {
 
         setb1("filled")
@@ -128,6 +138,13 @@ function ListPage() {
            <h1>Entraînement</h1>
 
             <RwPaper>
+                <Collapse in={addAlert}>
+
+
+                    <Alert severity="success">Ajouté avec succes</Alert>
+
+
+                </Collapse>
                 <Grid style={{textAlign:"center", marginTop: 0, marginBottom: 10}} container spacing={2}>
 
                     <Grid item xs={6} md={6} style={{paddingTop: 5}}>

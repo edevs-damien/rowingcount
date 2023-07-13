@@ -51,7 +51,7 @@ function SettingsPage() {
                     <Grid item xs={12}>
                         <Button onClick={() => {
                             logout();
-                            renderLogin();
+
                         }}  color="error" variant="outlined">Se Déconnecter</Button>
                     </Grid>
                 </Grid>
@@ -79,7 +79,7 @@ function SettingsPage() {
                     <Button onClick={() => {
                         handleClose();
                         resetKm(getUserName()).then(() => {
-                           setTimeout(renderHome, 250)
+                           setTimeout(renderHome("reset"), 500)
 
                         })
 

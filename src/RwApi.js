@@ -1,3 +1,5 @@
+import {renderLogin} from "./index";
+
 const auth = `Bearer fnAFHCwaZ1AAzXtVOGJ_puy0bfpwsh4NZbiyS0r-`
 export async function dbQuery(query) {
     const req = await fetch('https://graphql.eu.fauna.com/graphql', {
@@ -170,6 +172,7 @@ export function login(name) {
 
 export function logout() {
     setCookie("name", "", 1)
+    renderLogin("logout");
 }
 
 
@@ -194,5 +197,9 @@ function getCookie(cname) {
     }
     return "";
 }
+
+
+
+
 
 

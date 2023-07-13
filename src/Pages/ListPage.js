@@ -17,9 +17,8 @@ import RwAppBar from "../Component/rwAppBar";
 import "./defaultSheet.css"
 import {useEffect, useState} from "react";
 import Space from "../Component/Space";
-import {getAllTraining, getAllUser, getTrainingByUser, getUserByName, getUserName} from "../RwApi";
+import {getAllTraining, getTrainingByUser, getUserName} from "../RwApi";
 import {renderLogin} from "../index";
-import {DataGrid} from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
 
 const RwPaper = styled(Paper)({
@@ -39,7 +38,7 @@ function ListPage(props) {
         }
 
 
-        getAllTraining().then((data) => {
+        getTrainingByUser(getUserName()).then((data) => {
             let list = []
             let i = 0
             data.forEach((data) => {
@@ -69,17 +68,17 @@ function ListPage(props) {
 
 
 
-    }, [])
+    }, [props.mes])
 
 
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState([{id: 1,date: "30.06.2023", km: 10, boat: "Boat 1",rowers: {data: [{name: "Damien"},{name: "Sava"},{name: "Damien"},{name: "Sava"}]}}]);
-    const [b1, setb1] = useState("filled");
-    const [b2, setb2] = useState("outlined");
+    const [b1, setb1] = useState("outlined");
+    const [b2, setb2] = useState("filled");
 
 
     const [addAlert, setAddAlert] = useState(false);
-    const displayAllTraining = (b) => {
+    const displayAllTraining = () => {
 
         setb1("filled")
         setb2("outlined")
@@ -107,7 +106,7 @@ function ListPage(props) {
 
     }
 
-    const displayTrainingByUser = (b) => {
+    const displayTrainingByUser = () => {
 
         setb1("outlined")
         setb2("filled")
@@ -148,12 +147,13 @@ function ListPage(props) {
                 <Grid style={{textAlign:"center", marginTop: 0, marginBottom: 10}} container spacing={2}>
 
                     <Grid item xs={6} md={6} style={{paddingTop: 5}}>
+                        <Chip style={{width: "80%", margin: 10}} variant={b2}  label="Les miens" onClick={(b) => displayTrainingByUser(b)} />
+                    </Grid>
+                    <Grid item xs={6} md={6} style={{paddingTop: 5}}>
                         <Chip style={{width: "80%", margin: 10}} variant={b1}  label="Tous" onClick={(b) => displayAllTraining(b)} />
                     </Grid>
 
-                    <Grid item xs={6} md={6} style={{paddingTop: 5}}>
-                        <Chip style={{width: "80%", margin: 10}} variant={b2}  label="Les miens" onClick={(b) => displayTrainingByUser(b)} />
-                    </Grid>
+
 
                 </Grid>
 

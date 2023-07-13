@@ -85,6 +85,14 @@ function ListPage(props) {
 
 
     const [addAlert, setAddAlert] = useState(false);
+    const [delteAlert, setDeleteAlert] = useState(false);
+
+    const handleDeleteAlert = () => {
+        setDeleteAlert(true)
+        setTimeout(() => {
+            setDeleteAlert(false)
+        }, 3000)
+    }
 
 
     const handleCloseDialog = () => {
@@ -100,6 +108,7 @@ function ListPage(props) {
         setTimeout(() => {
             setLoading(false)
             displayTrainingByUser()
+            handleDeleteAlert()
         }, 1000)
 
 
@@ -226,6 +235,14 @@ function ListPage(props) {
 
 
                     <Alert severity="success">Ajouté avec succes</Alert>
+
+
+                </Collapse>
+
+                <Collapse in={delteAlert}>
+
+
+                    <Alert severity="success">Supprimé avec succes</Alert>
 
 
                 </Collapse>

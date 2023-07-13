@@ -1,4 +1,6 @@
 import {renderLogin} from "./index";
+import {km} from "date-fns/locale";
+import {doesSectionFormatHaveLeadingZeros} from "@mui/x-date-pickers/internals/hooks/useField/useField.utils";
 
 const auth = `Bearer fnAFHCwaZ1AAzXtVOGJ_puy0bfpwsh4NZbiyS0r-`
 export async function dbQuery(query) {
@@ -36,14 +38,14 @@ export async function getUserByName(name) {
 }
 
 export async function getTrainingByUser(name) {
-    const data = await dbQuery(`query getTrainingByUser { userByName(name: "${name}") { data { Trainings { data { _id km boat date rowers { data { _id name } } } } } } }`)
+    const data = await dbQuery(`query getTrainingByUser { userByName(name: "${name}") { data { Trainings { data { _id km boat date rowers { data { _id name km nbt  } } } } } } }`)
     if(data.userByName.data[0].Trainings=== undefined) return false
 
     return data.userByName.data[0].Trainings.data
 }
 
 export async function getAllTraining() {
-    const data = await dbQuery(`{ allTraining { data { _id km boat date rowers { data { _id name } } } } }`)
+    const data = await dbQuery(`{ allTraining { data { _id km boat date rowers { data { _id name km nbt } } } } }`)
     if(data.allTraining.data=== undefined) return false
     return data.allTraining.data
 }
@@ -146,6 +148,27 @@ export async function deleteTraining(data) {
 
     const next2 = async () => {
         await dbQuery(`mutation changeTraining { deleteTraining(id: "${data._id}") {_id} }`)
+        await next3()
+    }
+
+    const next3 = async () => {
+
+        data.rowers.data.forEach((du) => {
+
+
+           if(du.nbt === 0) {
+               alert("Error : Veuillez réinitialiser vos résultats pour pouvoir les mettre a jour")
+               return
+           }
+
+           if(du.km < data.km) {
+               alert("Error : Veuillez réinitialiser vos résultats pour pouvoir les mettre a jour")
+               return;
+           }
+
+            dbQuery(`mutation changeKm { updateUser(id: "${du._id}", data: { km: ${du.km - data.km} nbt: ${du.nbt - 1} }) {_id}  }`)
+        })
+
 
     }
 

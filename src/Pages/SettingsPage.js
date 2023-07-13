@@ -79,9 +79,11 @@ function SettingsPage() {
                     <Button onClick={() => {
                         handleClose();
                         resetKm(getUserName()).then(() => {
-                           setTimeout(renderHome("reset"), 500)
+
 
                         })
+
+                        setTimeout(renderHome("reset"), 1000)
 
                     }} autoFocus color={"error"}>
                         Réinitialiser

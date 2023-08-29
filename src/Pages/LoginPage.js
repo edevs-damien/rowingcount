@@ -140,13 +140,14 @@ function LoginPage(props) {
                         value={newName}
                         onChange={(event) => {
 
-                            setNewName(deleteEndSpace(event.target.value));
+                            setNewName(event.target.value);
                         }}
                     />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Annuler</Button>
                     <Button onClick={() => {
+
                         if(UserList.includes(newName)) {
                             setUserNameAlert(true);
                         } else {

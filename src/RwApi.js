@@ -186,17 +186,20 @@ export async function deleteTraining(data) {
 export async function createUser(name) {
 
 
+    console.log("name")
 
-
-    dbQuery(`query getUserId { userByName(name: "${name}") { data { _id} } }`).then(async () => {
+    dbQuery(`query getUserId { userByName(name: "${name}") { data { _id} } }`).then(async (a) => {
         
-
-        try {
-        } catch (error) {
-            await next()
+        console.log(a)
+        if(a.userByName.data[0] !== undefined) {
+            alert("Error : User already exists")
             return
+        } else {
+
+            await next()
         }
-        console.log("User Exists")
+
+
     })
 
     const next = async () => {
